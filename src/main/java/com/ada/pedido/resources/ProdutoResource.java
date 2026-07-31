@@ -76,6 +76,22 @@ public class ProdutoResource {
            .build();
     }
 
+    @GET
+    @Path("/buscar-por-descricao/{descricao}")
+    @PermitAll
+    public Response buscarProdutoPorDescricao(@PathParam("descricao") String descricao) {
+        var listaProdutos = produtoRepository.findByDescricaoLike(descricao).list();
+
+        var listaProdutosDTO = listaProdutos.stream()
+                .map(ProdutoDTO::fromEntity)
+                .toList();
+
+        return Response
+           .status(Response.Status.OK)
+           .entity(listaProdutosDTO)
+           .build();
+    }
+
     @DELETE
     @Path("/deletar/{id}")
     @Transactional

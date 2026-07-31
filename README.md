@@ -99,6 +99,7 @@ Base path: `/produtos`
 
 - `GET /produtos/listar`: público (`PermitAll`)
 - `GET /produtos/buscar/{id}`: público (`PermitAll`)
+- `GET /produtos/buscar-por-descricao/{descricao}`: público (`PermitAll`)
 - `POST /produtos/criar`: somente `ADMIN`
 - `PUT /produtos/atualizar/{id}`: somente `ADMIN`
 - `PATCH /produtos/atualizar-parcialmente/{id}`: somente `ADMIN`
@@ -137,6 +138,10 @@ Base path: `/produtos`
 #### Buscar produto por ID
 
 `GET /produtos/buscar/1`
+
+#### Buscar produto por descrição
+
+`GET /produtos/buscar-por-descricao/mouse`
 
 #### Atualizar produto completo
 
