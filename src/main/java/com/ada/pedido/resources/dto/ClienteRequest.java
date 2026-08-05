@@ -1,7 +1,7 @@
 package com.ada.pedido.resources.dto;
 
-import com.ada.pedido.repositories.ClienteEntity;
-import com.ada.pedido.repositories.TipoUsuario;
+import com.ada.pedido.repositories.entities.ClienteEntity;
+import com.ada.pedido.repositories.entities.TipoUsuario;
 import io.quarkus.elytron.security.common.BcryptUtil;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;

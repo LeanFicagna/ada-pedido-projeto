@@ -1,10 +1,6 @@
 package com.ada.pedido.resources.dto;
 
-import com.ada.pedido.repositories.ClienteEntity;
-import io.quarkus.elytron.security.common.BcryptUtil;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
+import com.ada.pedido.repositories.entities.ClienteEntity;
 
 public record ClienteResponse(
         Long id,

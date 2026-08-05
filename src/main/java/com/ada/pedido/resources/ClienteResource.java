@@ -1,6 +1,6 @@
 package com.ada.pedido.resources;
 
-import com.ada.pedido.repositories.ClienteEntity;
+import com.ada.pedido.repositories.entities.ClienteEntity;
 import com.ada.pedido.repositories.ClienteRepository;
 import com.ada.pedido.resources.dto.ClienteRequest;
 import com.ada.pedido.resources.dto.ClienteResponse;
