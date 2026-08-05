@@ -46,7 +46,9 @@ class PedidoServiceTest {
         securityIdentity = mock(SecurityIdentity.class);
         clienteRepository = mock(ClienteRepository.class);
         produtoRepository = mock(ProdutoRepository.class);
-        processadores = mock(Instance.class);
+        @SuppressWarnings("unchecked")
+        Instance<ProcessarPedido> mockProcessadores = mock(Instance.class);
+        processadores = mockProcessadores;
         pedidoRepository = mock(PedidoRepository.class);
         pedidoService = new PedidoService(
                 securityIdentity,
@@ -135,5 +137,72 @@ class PedidoServiceTest {
         assertEquals(new BigDecimal("14.00"), resposta.get(0).totalPedido());
         assertEquals("Mouse", resposta.get(0).items().get(0).descricaoProduto());
     }
-}
 
+    @Test
+    void listarTodos_deveRetornarListaVaziaSemPedidos() {
+        when(pedidoRepository.listAll()).thenReturn(List.of());
+
+        List<PedidoResponse> resposta = pedidoService.listarTodos();
+
+        assertEquals(0, resposta.size());
+        verify(pedidoRepository).listAll();
+    }
+
+    @Test
+    void criar_deveLancarErroQuandoProdutoNaoExiste() {
+        Principal principal = () -> "cliente@teste.com";
+        when(securityIdentity.getPrincipal()).thenReturn(principal);
+
+        ClienteEntity cliente = new ClienteEntity();
+        cliente.setNome("Cliente");
+        when(clienteRepository.findByEmail("cliente@teste.com")).thenReturn(Optional.of(cliente));
+
+        when(produtoRepository.findByIdOptional(999L)).thenReturn(Optional.empty());
+
+        PedidoRequest pedidoRequest = new PedidoRequest(List.of(new ItemPedidoRequest(999L, 1)));
+
+        RuntimeException exception = assertThrows(RuntimeException.class, () -> pedidoService.criar(pedidoRequest));
+        assertEquals("Produto não encontrado", exception.getMessage());
+    }
+
+    @Test
+    void criar_deveCalcularTotalPedidoCorretamente() {
+        Principal principal = () -> "cliente@teste.com";
+        when(securityIdentity.getPrincipal()).thenReturn(principal);
+
+        ClienteEntity cliente = new ClienteEntity();
+        cliente.setNome("Cliente Teste");
+        cliente.setEmail("cliente@teste.com");
+        when(clienteRepository.findByEmail("cliente@teste.com")).thenReturn(Optional.of(cliente));
+
+        ProdutoEntity produto1 = new ProdutoEntity();
+        produto1.setId(1L);
+        produto1.setDescricao("Produto 1");
+        produto1.setPreco(new BigDecimal("100"));
+        produto1.setEstoque(10);
+
+        ProdutoEntity produto2 = new ProdutoEntity();
+        produto2.setId(2L);
+        produto2.setDescricao("Produto 2");
+        produto2.setPreco(new BigDecimal("50"));
+        produto2.setEstoque(10);
+
+        when(produtoRepository.findByIdOptional(1L)).thenReturn(Optional.of(produto1));
+        when(produtoRepository.findByIdOptional(2L)).thenReturn(Optional.of(produto2));
+
+        when(processadores.iterator()).thenReturn(List.<ProcessarPedido>of().iterator());
+
+        PedidoRequest pedidoRequest = new PedidoRequest(
+                List.of(
+                        new ItemPedidoRequest(1L, 2),
+                        new ItemPedidoRequest(2L, 3)
+                )
+        );
+
+        PedidoResponse response = pedidoService.criar(pedidoRequest);
+
+        // Total = (100 * 2) + (50 * 3) = 200 + 150 = 350
+        assertEquals(new BigDecimal("350"), response.totalPedido());
+        assertEquals(2, response.items().size());
+    }
+}
