@@ -1,5 +1,6 @@
 package com.ada.pedido.repositories;
 
+import com.ada.pedido.repositories.entities.ProdutoEntity;
 import io.quarkus.hibernate.orm.panache.PanacheQuery;
 import io.quarkus.hibernate.orm.panache.PanacheRepositoryBase;
 import jakarta.enterprise.context.ApplicationScoped;

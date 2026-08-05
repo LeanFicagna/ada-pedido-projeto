@@ -11,6 +11,7 @@ import jakarta.inject.Singleton;
 import jakarta.transaction.Transactional;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Singleton
 public class Startup {
@@ -33,19 +34,37 @@ public class Startup {
 
     @Transactional
     public void criarProduto(@Observes StartupEvent evt, ProdutoRepository repository) {
-        System.out.println("Criando produto...");
-        if (repository.findByDescricaoLikeIgnoreCase("Produto para teste").isEmpty()) {
-            ProdutoEntity produto = new ProdutoEntity();
-            produto.setDescricao("Produto para teste");
-            produto.setPreco(BigDecimal.TEN);
-            produto.setEstoque(10);
-            repository.persist(produto);
+        var produtosIniciais = List.of(
+                novoProduto("Notebook Pro 14", new BigDecimal("4599.90"), 8),
+                novoProduto("Mouse Sem Fio", new BigDecimal("129.90"), 40),
+                novoProduto("Teclado Mecânico", new BigDecimal("349.90"), 25),
+                novoProduto("Monitor 27 Polegadas", new BigDecimal("1399.00"), 12),
+                novoProduto("Headset Gamer", new BigDecimal("279.90"), 20)
+        );
+
+        System.out.println("Criando produtos de teste...");
+        for (ProdutoEntity produto : produtosIniciais) {
+            if (repository.findByDescricaoLike(produto.getDescricao()).count() == 0) {
+                repository.persist(produto);
+            }
         }
-        System.out.println("Produto Criado!");
-        var produto = repository.findByDescricaoLikeIgnoreCase("Produto para teste").get(0);
-        System.out.println("Produto: " + produto.getId() +
-                           " - Descrição: " + produto.getDescricao() +
-                           " - Preço: " + produto.getPreco() +
-                           " - Estoque: " + produto.getEstoque());
+
+        System.out.println("Produtos disponíveis para teste:");
+        for (ProdutoEntity produto : produtosIniciais) {
+            repository.findByDescricaoLike(produto.getDescricao())
+                    .firstResultOptional()
+                    .ifPresent(p -> System.out.println("Produto: " + p.getId() +
+                                                       " - Descrição: " + p.getDescricao() +
+                                                       " - Preço: " + p.getPreco() +
+                                                       " - Estoque: " + p.getEstoque()));
+        }
+    }
+
+    private ProdutoEntity novoProduto(String descricao, BigDecimal preco, int estoque) {
+        ProdutoEntity produto = new ProdutoEntity();
+        produto.setDescricao(descricao);
+        produto.setPreco(preco);
+        produto.setEstoque(estoque);
+        return produto;
     }
 }

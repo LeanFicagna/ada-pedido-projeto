@@ -21,7 +21,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-//@ApplicationScoped
+@ApplicationScoped
 public class PedidoService {
 
     private final SecurityIdentity securityIdentity;

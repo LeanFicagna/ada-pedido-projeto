@@ -1,6 +1,6 @@
 package com.ada.pedido.resources;
 
-import com.ada.pedido.repositories.ProdutoEntity;
+import com.ada.pedido.repositories.entities.ProdutoEntity;
 import com.ada.pedido.repositories.ProdutoRepository;
 import com.ada.pedido.resources.dto.ProdutoDTO;
 import io.quarkus.security.Authenticated;

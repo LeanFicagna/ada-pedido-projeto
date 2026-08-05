@@ -1,4 +1,4 @@
-package com.ada.pedido.repositories;
+package com.ada.pedido.repositories.entities;
 
 import jakarta.persistence.*;
 

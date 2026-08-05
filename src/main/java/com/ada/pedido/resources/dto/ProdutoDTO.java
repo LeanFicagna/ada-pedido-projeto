@@ -1,8 +1,6 @@
 package com.ada.pedido.resources.dto;
 
-import com.ada.pedido.repositories.ClienteEntity;
-import com.ada.pedido.repositories.ProdutoEntity;
-import jakarta.validation.constraints.Email;
+import com.ada.pedido.repositories.entities.ProdutoEntity;
 import jakarta.validation.constraints.NotBlank;
 
 import java.math.BigDecimal;
